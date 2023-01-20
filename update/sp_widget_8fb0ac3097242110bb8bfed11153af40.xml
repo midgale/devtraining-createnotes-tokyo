@@ -16,6 +16,7 @@
 			c.data.noteID = r.data.note.sys_id;
 		});
 	});
+	
 	c.updateNote = function(updateType) {
 		c.server.get({
 			action: 'updateNote',
@@ -23,7 +24,11 @@
 			noteBody: c.data.note,
 			noteTitle: c.data.title
 		}).then(function(r) {
-		});
+			//when promise is returned, emit the change
+			if (updateType == 'title' || updateType == 'body') {
+				$rootScope.$emit('updateTitle', r.data);
+			}
+			/*
 		// draft
 		var id = c.data.noteID;
 		var body = c.data.note;
@@ -32,6 +37,8 @@
 		$rootScope.noteBody = body;
 		$rootScope.noteTitle = title;
 		$rootScope.$emit('updateNote', id, body, title);
+		*/
+			});
 	}
 }
 
@@ -73,6 +80,10 @@ var c = this;
 				note.title = input.noteTitle;
 				note.note = input.noteBody;
 				note.update();
+				//need to update the data object with the new title
+				//and first 20 characters of the note
+				data.title = note.getValue('title');
+				data.note = note.getValue('note').slice(0,20);
 			}
 		}
 	}

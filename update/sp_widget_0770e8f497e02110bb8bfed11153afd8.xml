@@ -4,25 +4,39 @@
         <client_script><![CDATA[function($rootScope,$scope) {
 	/* widget controller */
 	var c = this;
+	//position indicator for which record to update in the array
+	c.notePos = 0;
+	
 	c.selectItem = function(idx) {
+		//set the position indicator to the index value passed in on select
+		c.notePos = idx;
 		var id = c.data.notes[idx].sys_id;
 		console.log('Note ID: ' + id);
 		$rootScope.noteID = id;
 		$rootScope.$emit('selectNote', id);
 	}
-	$rootScope.$on('updateNote', function(event, data) {
+	//subscribe to event, set the new title and note values on the c.data object
+	$rootScope.$on('updateTitle', function(event, data) {
+		console.log("updateTitle event received: " + event);
+		console.log(data);
+		c.data.notes[c.notePos].title = data.title;
+		c.data.notes[c.notePos].note = data.note;
+			});
+}
+		/*
 		console.log('Listener caught NoteID: ' + $rootScope.noteID + ' Title: ' + $rootScope.noteTitle + ' Body: ' + $rootScope.noteBody);
 		c.server.get({
 			action: 'updateNote',
 			noteID: $rootScope.noteID,
 			noteTitle: $rootScope.noteTitle,
 			noteBody: $rootScope.noteBody
+		
 		})
+		*/
 		
 		//objIndex = data.notes.findIndex((obj => obj.sys_id == $rootScope.noteID));
 		//console.log(data.notes[objIndex]);
-	});
-}
+
 
 /*
 	$rootScope.$on('selectNote', function(event,data) { 
@@ -68,6 +82,7 @@
 		//push the populated obj into the array
 		data.notes.push(noteObj);
 	}
+/*
 	function updateNoteDetails(id, newTitle, newBody) {
 		for (var i in data.notes) {
 			if (data.notes[i].sys_id == id) {
@@ -86,6 +101,7 @@
 		}
 		
 	}
+*/
 		
 })();
 
